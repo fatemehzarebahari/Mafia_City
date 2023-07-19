@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Bases;
 using UnityEngine;
 
 public class House : Building
@@ -11,10 +12,6 @@ public class House : Building
         name = "House";
         
     }
-    //
-    // public House()
-    // {
-    //
-    // }
+    
 
 }

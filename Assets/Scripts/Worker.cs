@@ -1,4 +1,5 @@
 using System.Collections;
+using Bases;
 using UnityEngine;
 public class Worker : Person
 {
