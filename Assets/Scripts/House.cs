@@ -10,7 +10,7 @@ public class House : Building
     {
         _money = 500;
         name = "House";
-        
+        ID = 1;
     }
     
 

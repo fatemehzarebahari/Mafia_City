@@ -1,18 +1,30 @@
-using System.Collections;
-using System.Collections.Generic;
+
+using Bases;
 using UnityEngine;
 
-public class Miner : MonoBehaviour
+public class Miner : Person
 {
-    // Start is called before the first frame update
-    void Start()
+    private void Awake()
     {
-        
+        name = "Miner";
+        _money = 0;
+        ID = 11;
     }
 
-    // Update is called once per frame
-    void Update()
+    protected override void ActionInWayPoint(Transform target)
     {
-        
+        Mine targetMine = target.GetComponent<Mine>();
+        if (targetMine.GetBalance() - _transferMoneyAmount >= targetMine.GetMinimumMoney())
+        {
+            IncreaseMoney();
+            targetMine.DecreaseMoney();
+        }
+
+
+    }
+    
+    protected override void UpdateWayPoints()
+    {
+        _wayPoints = listManager.GetMines();
     }
 }
