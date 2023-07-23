@@ -8,23 +8,28 @@ public class Worker : Person
         name = "Worker";
         _money = 0;
         ID = 10;
+        
     }
 
     protected override void ActionInWayPoint(Transform target)
     {
         House targetHouse = target.GetComponent<House>();
-        if (targetHouse.GetBalance() - _transferMoneyAmount >= targetHouse.GetMinimumMoney())
+        if (targetHouse.GetBalance() > targetHouse.GetMinimumMoney())
         {
-            IncreaseMoney();
-            targetHouse.DecreaseMoney();
+            int m = _transferMoneyAmount;
+            if (_transferMoneyAmount > targetHouse.GetBalance() - targetHouse.GetMinimumMoney())
+                m = targetHouse.GetBalance() - targetHouse.GetMinimumMoney();
+            IncreaseMoney(m); 
+            targetHouse.DecreaseMoney(m);
         }
 
 
     }
-    
-    protected override void UpdateWayPoints()
+
+    public override void UpdateWayPoints()
     {
         _wayPoints = listManager.GetHouses();
     }
+
 
 }

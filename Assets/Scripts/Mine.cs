@@ -11,4 +11,9 @@ public class Mine : Building
         name = "Mine";
         ID = 2;
     }
+    public override void Kill()
+    {
+        _isDead = true;
+        listManager.RemoveFromMines(transform);
+    }
 }

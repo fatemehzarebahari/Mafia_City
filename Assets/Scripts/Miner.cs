@@ -14,16 +14,21 @@ public class Miner : Person
     protected override void ActionInWayPoint(Transform target)
     {
         Mine targetMine = target.GetComponent<Mine>();
-        if (targetMine.GetBalance() - _transferMoneyAmount >= targetMine.GetMinimumMoney())
+        if (targetMine.GetBalance() > targetMine.GetMinimumMoney())
         {
-            IncreaseMoney();
-            targetMine.DecreaseMoney();
+            int m = _transferMoneyAmount;
+            if (_transferMoneyAmount > targetMine.GetBalance() - targetMine.GetMinimumMoney())
+                m = targetMine.GetBalance() - targetMine.GetMinimumMoney();
+            IncreaseMoney(m); 
+            targetMine.DecreaseMoney(m);
         }
+        
+
 
 
     }
-    
-    protected override void UpdateWayPoints()
+
+    public override void UpdateWayPoints()
     {
         _wayPoints = listManager.GetMines();
     }

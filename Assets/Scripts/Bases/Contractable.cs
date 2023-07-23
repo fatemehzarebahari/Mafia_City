@@ -17,6 +17,8 @@ public class Contractable : MonoBehaviour
 
     protected int ID = -1;
     
+    [SerializeField] protected ListManagers listManager;
+
     [SerializeField] private TextMeshProUGUI tag;
     protected virtual void Start()
     {
@@ -24,14 +26,14 @@ public class Contractable : MonoBehaviour
     }
 
 
-    public void IncreaseMoney(){
-        _money += _transferMoneyAmount;
+    public void IncreaseMoney(int m){
+        _money += m;
         UpdateTag();
     }
     
-    public virtual void DecreaseMoney(){
+    public virtual void DecreaseMoney(int m){
         if(_money > _minMoney){
-            _money -= _transferMoneyAmount;
+            _money -= m;
         }
 
         UpdateTag();
@@ -70,7 +72,13 @@ public class Contractable : MonoBehaviour
         yield return new WaitForSeconds(waitingTime);
 
     }
-    public void Kill()
+
+    protected virtual IEnumerator WaitAndCall()
+    {
+        yield return new WaitForSeconds(waitingTime);
+
+    }
+    public virtual void Kill()
     {
         _isDead = true;
     }

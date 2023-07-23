@@ -12,6 +12,11 @@ public class House : Building
         name = "House";
         ID = 1;
     }
+    public override void Kill()
+    {
+        _isDead = true;
+        listManager.RemoveFromHouses(transform);
+    }
     
 
 }

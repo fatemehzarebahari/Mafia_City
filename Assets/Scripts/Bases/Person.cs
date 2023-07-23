@@ -10,31 +10,34 @@ namespace Bases
     public class Person : Contractable
     {
         protected bool _inJail = false;
+        protected int _inJailTime = 20;
         protected int _currentWayPointIndex = 0; 
         protected bool _haveBeenRubbed = false;
 
         protected List<Transform> _wayPoints;
         
-        private bool activeMoving = true;
+        protected bool activeMoving = true;
 
         protected float speed = 10;
         protected float accelaration = 20;
 
-        [SerializeField] protected ListManagers listManager;
-        [SerializeField] private NavMeshAgent agent;
+        [SerializeField] protected NavMeshAgent agent;
+        
+        [SerializeField] private Transform jailTransform;
+        private Transform positionBeforeJail;
         protected override void  Start()
         {
             UpdateTag();
             UpdateWayPoints();
-            _currentWayPointIndex = Random.Range(0, _wayPoints.Count );
+            _currentWayPointIndex = Random.Range(0, _wayPoints.Count);
             MoveToWayPoint();
             agent.speed = speed;
             agent.acceleration = accelaration; 
         }
 
-        private void Update()
+        protected virtual void Update()
         {
-            if (!_isDead && _wayPoints.Count > 0){
+            if (!_isDead && _wayPoints.Count > 0 &&!_inJail){
                 float distance = Vector3.Distance(transform.position, target.position);
                 if (distance < 10 && activeMoving)
                 {
@@ -71,6 +74,7 @@ namespace Bases
         {
             agent.isStopped = true;
             activeMoving = false;
+            SetWaitingTime();
             yield return new WaitForSeconds(waitingTime);
             ActionInWayPoint(target);
             activeMoving = true;
@@ -86,31 +90,57 @@ namespace Bases
             // what to do in each way point
         }
 
-        protected virtual void UpdateWayPoints()
+        public virtual void UpdateWayPoints()
         {
             // update wayPoints with new ones
         }
 
-        protected virtual void Heal()
+        public virtual void Heal()
         {
             _isDead = false;
+            UpdateTag();
+            resetPerson();
+            listManager.AddToAlivePeople(transform);
         }
         public bool GetRubberyStatus()
         {
             return _haveBeenRubbed;
         }
 
-        public void JustBeenRubbed()
+        public void JustBeenRubbed(Transform thief)
         {
-            StartCoroutine(RubberyWaiting(rubberyTime));
+            StartCoroutine(RubberyWaiting(rubberyTime,thief));
         }
-        private IEnumerator RubberyWaiting(float time)
+        private IEnumerator RubberyWaiting(float time,Transform thief)
         {
-            listManager.AddToRubberyList(transform);
+            listManager.AddToRubberyList(transform,thief);
             _haveBeenRubbed = true;
             yield return new WaitForSeconds(time);
-            listManager.RemoveFromRubbedPeople(transform);
+            listManager.RemoveFromRubbedPeople(transform,thief);
             _haveBeenRubbed = false;
+        }
+        
+        public void SendToJail()
+        {
+            if (!_isDead)
+            {
+                StopAllCoroutines();
+                StartCoroutine(JailWaiting(_inJailTime));
+            }
+
+        }
+        private IEnumerator JailWaiting(float time)
+        {
+            _inJail = true;
+            agent.speed = 100;
+            positionBeforeJail = transform;
+            agent.SetDestination(jailTransform.position);
+            yield return new WaitForSeconds(time);
+            _inJail = false;
+            target = positionBeforeJail;
+            agent.speed = speed;
+            resetPerson();
+
         }
         
         protected virtual void OnTriggerEnter(Collider other)
@@ -118,6 +148,35 @@ namespace Bases
             // if(other.transform != target){}
         }
 
+        protected virtual void SetWaitingTime()
+        {
+            // how much should we wait for this contract
+        }
+
+        protected void resetPerson()
+        {
+            listManager.resetFromRobberyLists(transform);
+            _haveBeenRubbed = false;
+            activeMoving = true;
+            agent.isStopped = false;
+            UpdateWayPoints();
+            agent.speed = speed;
+            agent.acceleration = accelaration;
+        }
+        public override void Kill()
+        {
+            _isDead = true;
+            StopAllCoroutines();
+            UpdateTag();
+            agent.isStopped = true;
+            activeMoving = false;
+            listManager.AddToDeadPeople(transform);
+        }
+
+        public bool IsInJail()
+        {
+            return _inJail;
+        }
 
     }
 }

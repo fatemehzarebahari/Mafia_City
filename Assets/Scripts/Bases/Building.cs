@@ -8,9 +8,9 @@ namespace Bases
             name = "Building";
         }
 
-        public override void DecreaseMoney(){
+        public override void DecreaseMoney(int m){
             if(_money > 0){
-                _money -= _transferMoneyAmount;
+                _money -= m;
             }
 
             if (_money < 0)
