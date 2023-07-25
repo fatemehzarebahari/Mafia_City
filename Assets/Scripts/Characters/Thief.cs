@@ -64,9 +64,7 @@ public class Thief : Person
             }
             
         }
-
-
-
+        
     }
 
     public override void UpdateWayPoints()

@@ -15,7 +15,7 @@ public class House : Building
     public override void Kill()
     {
         _isDead = true;
-        listManager.RemoveFromHouses(transform);
+        listManager.RemoveTheHouse(transform);
     }
     
 

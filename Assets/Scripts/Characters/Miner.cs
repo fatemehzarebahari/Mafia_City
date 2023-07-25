@@ -1,16 +1,26 @@
 
 using Bases;
+using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
 
 public class Miner : Person
 {
+    [SerializeField] private int index;
     private void Awake()
     {
         name = "Miner";
         _money = 0;
         ID = 11;
     }
-
+    protected override void  Start()
+    {
+        UpdateTag();
+        UpdateWayPoints();
+        _currentWayPointIndex = index;
+        MoveToWayPoint();
+        agent.speed = speed;
+        agent.acceleration = accelaration; 
+    }
     protected override void ActionInWayPoint(Transform target)
     {
         Mine targetMine = target.GetComponent<Mine>();

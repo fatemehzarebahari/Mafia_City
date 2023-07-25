@@ -3,6 +3,8 @@ using Bases;
 using UnityEngine;
 public class Worker : Person
 {
+    private bool firstEnter = false;
+    [SerializeField] private int index;
     private void Awake()
     {
         name = "Worker";
@@ -10,7 +12,15 @@ public class Worker : Person
         ID = 10;
         
     }
-
+    protected override void  Start()
+    {
+        UpdateTag();
+        UpdateWayPoints();
+        _currentWayPointIndex = index;
+        MoveToWayPoint();
+        agent.speed = speed;
+        agent.acceleration = accelaration; 
+    }
     protected override void ActionInWayPoint(Transform target)
     {
         House targetHouse = target.GetComponent<House>();
@@ -22,14 +32,12 @@ public class Worker : Person
             IncreaseMoney(m); 
             targetHouse.DecreaseMoney(m);
         }
-
-
+        
     }
 
     public override void UpdateWayPoints()
     {
         _wayPoints = listManager.GetHouses();
     }
-
-
+    
 }

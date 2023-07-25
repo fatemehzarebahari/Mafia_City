@@ -15,6 +15,7 @@ public class ListManagers : MonoBehaviour
 
 
     private List<Transform> Houses = new List<Transform>();
+
     private List<Transform> Mines = new List<Transform>();
     private List<Transform> DeadPeople = new List<Transform>();
     private List<Transform> AlivePeople = new List<Transform>();
@@ -166,10 +167,12 @@ public class ListManagers : MonoBehaviour
     {
         Mines.Remove(m);
     }
-    public void RemoveFromHouses(Transform h)
+
+    public void RemoveTheHouse(Transform h)
     {
         Houses.Remove(h);
     }
+
 
     public List<Transform> GetAlivePeople()
     {
@@ -183,6 +186,7 @@ public class ListManagers : MonoBehaviour
     {
         return Houses;
     }
+
     public List<Transform> GetMines()
     {
         return Mines;
